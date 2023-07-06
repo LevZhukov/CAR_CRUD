@@ -1,0 +1,7 @@
+package com.levzhukov;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CarService {
+}
