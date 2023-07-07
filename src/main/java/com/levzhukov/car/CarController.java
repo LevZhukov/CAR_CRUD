@@ -45,4 +45,14 @@ public class CarController {
                             @RequestParam(required = false) Manufacturer manufacturer) {
         return "Car record updated";
     }
+    @DeleteMapping("{carId}")
+    public String deleteCar(@PathVariable("carId") int carId){
+       try{
+           carService.deleteCar(carId);
+           return "car with Id " + carId + " was deleted";
+       }
+       catch (Exception e){
+           return "no car with Id " + carId + " was found";
+       }
+    }
 }

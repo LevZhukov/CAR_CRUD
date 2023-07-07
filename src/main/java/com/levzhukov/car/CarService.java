@@ -19,15 +19,22 @@ public class CarService {
     }
 
     public Car getCarById(int carId) throws IllegalArgumentException {
-        Optional<Car> carOptional =carRepository.findById(carId);
-        if(carOptional.isPresent()){
+        Optional<Car> carOptional = carRepository.findById(carId);
+        if (carOptional.isPresent()) {
             return carOptional.get();
-        }
-        else throw new IllegalArgumentException();
-        }
+        } else throw new IllegalArgumentException();
+    }
 
     public List<Car> getAllCars() {
         return carRepository.findAll();
+    }
+
+    public void deleteCar(int carId) throws Exception {
+        Optional<Car> optionalCar = carRepository.findById(carId);
+        if (!optionalCar.isPresent()){
+            throw new Exception();
+        }
+        else carRepository.deleteById(carId);
     }
 }
 
