@@ -23,11 +23,10 @@ public class CarController {
 
     @GetMapping("{carId}")
     public String getCarById(@PathVariable("carId") int carId) {
-        try{
+        try {
             return carService.getCarById(carId).toString();
-        }
-        catch (IllegalArgumentException e){
-            return "car with id "+ carId + " was not found";
+        } catch (IllegalArgumentException e) {
+            return "car with id " + carId + " was not found";
         }
     }
 
@@ -41,18 +40,23 @@ public class CarController {
     public String updateCar(@PathVariable("carId") int carId,
                             @RequestParam(required = false) String model,
                             @RequestParam(required = false) LocalDate issueDate,
-                            @RequestParam(required = false) int cost,
-                            @RequestParam(required = false) Manufacturer manufacturer) {
-        return "Car record updated";
+                            @RequestParam(required = false) Integer cost) {
+        try {
+            carService.updateCar(carId, model, issueDate, cost);
+            return "car with Id " + carId + " was updated";
+        }
+        catch (Exception e){
+            return "no car with Id " + carId + " was found";
+        }
     }
+
     @DeleteMapping("{carId}")
-    public String deleteCar(@PathVariable("carId") int carId){
-       try{
-           carService.deleteCar(carId);
-           return "car with Id " + carId + " was deleted";
-       }
-       catch (Exception e){
-           return "no car with Id " + carId + " was found";
-       }
+    public String deleteCar(@PathVariable("carId") int carId) {
+        try {
+            carService.deleteCar(carId);
+            return "car with Id " + carId + " was deleted";
+        } catch (Exception e) {
+            return "no car with Id " + carId + " was found";
+        }
     }
 }

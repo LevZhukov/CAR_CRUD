@@ -1,7 +1,9 @@
 package com.levzhukov.car;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,10 +33,20 @@ public class CarService {
 
     public void deleteCar(int carId) throws Exception {
         Optional<Car> optionalCar = carRepository.findById(carId);
-        if (!optionalCar.isPresent()){
+        if (!optionalCar.isPresent()) {
             throw new Exception();
-        }
-        else carRepository.deleteById(carId);
+        } else carRepository.deleteById(carId);
+    }
+
+    @Transactional
+    public void updateCar(int carId, String model, LocalDate issueDate, Integer cost) throws Exception {
+        Optional<Car> optionalCar = carRepository.findById(carId);
+        if (optionalCar.isPresent()) {
+            Car car = optionalCar.get();
+            if(model != null) car.setModel(model);
+            if(issueDate != null) car.setIssueDate(issueDate);
+            if(cost != null) car.setCost(cost);
+        } else throw new Exception();
     }
 }
 

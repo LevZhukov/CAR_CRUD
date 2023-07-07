@@ -47,6 +47,14 @@ public class Car {
         this.issueDate = issueDate;
     }
 
+    public int getCost() {
+        return cost;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
     public int getId() {
         return id;
     }
