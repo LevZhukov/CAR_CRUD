@@ -1,6 +1,9 @@
 package com.levzhukov.car;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 
@@ -11,19 +14,23 @@ public class Car {
     private int id;
     private int cost;
     private LocalDate issueDate;
+
     private String model;
     private Manufacturer manufacturer;
 
-
-
-    public void setManufacturer(Manufacturer manufacturer) {
-        this.manufacturer = manufacturer;
+    public Car() {
     }
 
+    public Car(int cost, String model, LocalDate issueDate) {
+        this.cost = cost;
+        this.issueDate = issueDate;
+        this.model = model;
+    }
 
     public Manufacturer getManufacturer() {
         return manufacturer;
     }
+
     public String getModel() {
         return model;
     }
@@ -42,5 +49,16 @@ public class Car {
 
     public int getId() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return "Car{" +
+                "id=" + id +
+                ", cost=" + cost +
+                ", issueDate=" + issueDate +
+                ", model='" + model + '\'' +
+                ", manufacturer=" + manufacturer +
+                '}';
     }
 }

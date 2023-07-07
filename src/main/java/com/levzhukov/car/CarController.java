@@ -1,31 +1,48 @@
 package com.levzhukov.car;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/car")
 public class CarController {
+    private final CarService carService;
+
+    @Autowired
+    public CarController(CarService carService) {
+        this.carService = carService;
+    }
+
     @GetMapping
-    public String getAllCars() {
-        return "All cars should be there";
+    public List<Car> getAllCars() {
+        return carService.getAllCars();
     }
+
     @GetMapping("{carId}")
-    public String getCarById(@PathVariable("carId") String carId){
-        return "Car with id " + carId + " will be shown here";
+    public String getCarById(@PathVariable("carId") int carId) {
+        try{
+            return carService.getCarById(carId).toString();
+        }
+        catch (IllegalArgumentException e){
+            return "car with id "+ carId + " was not found";
+        }
     }
+
     @PostMapping
-    public String recordCar(@RequestBody Car car){
-        return "new car has been recorded";
+    public String addCar(@RequestBody Car car) {
+        int id = carService.addCar(car);
+        return "new car has been recorded with id" + id;
     }
+
     @PatchMapping("{carId}")
     public String updateCar(@PathVariable("carId") int carId,
                             @RequestParam(required = false) String model,
                             @RequestParam(required = false) LocalDate issueDate,
                             @RequestParam(required = false) int cost,
-                            @RequestParam(required = false) Manufacturer manufacturer){
+                            @RequestParam(required = false) Manufacturer manufacturer) {
         return "Car record updated";
     }
 }
