@@ -1,4 +1,4 @@
-package com.levzhukov;
+package com.levzhukov.car;
 
 import org.springframework.stereotype.Repository;
 
