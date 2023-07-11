@@ -33,16 +33,15 @@ public class CarController {
     @PostMapping
     public String addCar(@RequestBody Car car) {
         int id = carService.addCar(car);
-        return "new car has been recorded with id" + id;
+        return "new car has been recorded with id " + id;
     }
 
     @PatchMapping("{carId}")
     public String updateCar(@PathVariable("carId") int carId,
-                            @RequestParam(required = false) String model,
-                            @RequestParam(required = false) LocalDate issueDate,
-                            @RequestParam(required = false) Integer cost) {
+                            @RequestBody Car car)
+                             {
         try {
-            carService.updateCar(carId, model, issueDate, cost);
+            carService.updateCar(carId, car);
             return "car with Id " + carId + " was updated";
         }
         catch (Exception e){

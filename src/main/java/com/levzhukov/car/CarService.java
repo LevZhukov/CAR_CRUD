@@ -33,19 +33,19 @@ public class CarService {
 
     public void deleteCar(int carId) throws Exception {
         Optional<Car> optionalCar = carRepository.findById(carId);
-        if (!optionalCar.isPresent()) {
+        if (optionalCar.isEmpty()) {
             throw new Exception();
         } else carRepository.deleteById(carId);
     }
 
     @Transactional
-    public void updateCar(int carId, String model, LocalDate issueDate, Integer cost) throws Exception {
+    public void updateCar(int carId, Car car) throws Exception {
         Optional<Car> optionalCar = carRepository.findById(carId);
         if (optionalCar.isPresent()) {
-            Car car = optionalCar.get();
-            if(model != null) car.setModel(model);
-            if(issueDate != null) car.setIssueDate(issueDate);
-            if(cost != null) car.setCost(cost);
+            Car carFromDB = optionalCar.get();
+            if(car.getModel() != null) carFromDB.setModel(car.getModel());
+            if(car.getIssueDate() != null) carFromDB.setIssueDate(car.getIssueDate());
+            if(car.getCost() != 0) carFromDB.setCost(car.getCost());
         } else throw new Exception();
     }
 }
