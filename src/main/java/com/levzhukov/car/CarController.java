@@ -1,9 +1,11 @@
 package com.levzhukov.car;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,40 +24,48 @@ public class CarController {
     }
 
     @GetMapping("{carId}")
-    public String getCarById(@PathVariable("carId") int carId) {
+    public Car getCarById(@PathVariable("carId") int carId) {
         try {
-            return carService.getCarById(carId).toString();
+            return carService.getCarById(carId);
         } catch (IllegalArgumentException e) {
-            return "car with id " + carId + " was not found";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "car with id " + carId + " was not found", e);
         }
     }
 
     @PostMapping
-    public String addCar(@RequestBody Car car) {
+    public Car addCar(@RequestBody Car car) {
         int id = carService.addCar(car);
-        return "new car has been recorded with id " + id;
+        return carService.getCarById(id);
     }
 
     @PatchMapping("{carId}")
-    public String updateCar(@PathVariable("carId") int carId,
-                            @RequestBody Car car)
-                             {
+    public Car updateCar(@PathVariable("carId") int carId,
+                            @RequestBody Car car) {
         try {
             carService.updateCar(carId, car);
-            return "car with Id " + carId + " was updated";
+            return carService.getCarById(carId);
         }
-        catch (Exception e){
-            return "no car with Id " + carId + " was found";
+        catch (IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "car with id " + carId + " was not found", e);
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "patch request for car with id " + carId + " resulted in error", e);
         }
     }
 
     @DeleteMapping("{carId}")
-    public String deleteCar(@PathVariable("carId") int carId) {
+    public Car deleteCar(@PathVariable("carId") int carId) {
         try {
+            Car removedCar = carService.getCarById(carId);
             carService.deleteCar(carId);
-            return "car with Id " + carId + " was deleted";
-        } catch (Exception e) {
-            return "no car with Id " + carId + " was found";
+            return removedCar;
         }
+        catch (IllegalArgumentException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "car with id " + carId + " was not found", e);
+        }
+        catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "delete request on car with id " + carId + " resulted in error", e);
+        }
+
     }
 }
