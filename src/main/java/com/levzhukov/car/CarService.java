@@ -21,10 +21,9 @@ public class CarService {
     }
 
     public Car getCarById(int carId) throws IllegalArgumentException {
-        Optional<Car> carOptional = carRepository.findById(carId);
-        if (carOptional.isPresent()) {
-            return carOptional.get();
-        } else throw new IllegalArgumentException();
+
+       return carRepository.findById(carId).orElseThrow(IllegalArgumentException::new);
+
     }
 
     public List<Car> getAllCars() {
