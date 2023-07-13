@@ -48,4 +48,14 @@ public class CarControllerTests {
                 .andExpect(status().isOk());
         verify(carService).addCar(any(Car.class));
     }
+
+    @Test
+    public void shouldReturnCar() throws Exception{
+        when(carService.getCarById(1)).thenReturn(new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01)));
+        mvc.perform(get("/api/car/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("cost").value(1000))
+                .andExpect(jsonPath("model").value("GranTorino"))
+                .andExpect(jsonPath("issueDate").value(LocalDate.of(1970, 01, 01).toString()));
+    }
 }
