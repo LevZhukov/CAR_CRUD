@@ -15,7 +15,7 @@ public class SmokeTest {
     @Autowired
     CarConfiguration carConfiguration;
     @Autowired
-    CarController controller;
+    CarController carController;
     @Autowired
     CarRepository carRepository;
     @Autowired
@@ -28,7 +28,7 @@ public class SmokeTest {
 
     @Test
     public void controllerLoads() {
-        assertThat(controller).isNotNull();
+        assertThat(carController).isNotNull();
     }
 
     @Test
