@@ -1,6 +1,7 @@
 package com.levzhukov;
 
 import com.levzhukov.car.Car;
+import com.levzhukov.car.CarController;
 import com.levzhukov.car.CarService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -8,14 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,13 +22,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Sql(value = {"../../reset-database-data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class CarControllerTests {
     @Autowired
     private MockMvc mvc;
     @Autowired
     private CarRepositoryTest carRepositoryTest;
-    @Autowired
-    private CarService carService;
 
     @Test
     public void setCarRepositoryTestLoads() throws Exception {
@@ -54,8 +52,10 @@ public class CarControllerTests {
         mvc.perform(post("/api/car")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"cost\":1000, \"model\":\"GranTorino\", \"issueDate\":\"1970-01-01\"}"))
-                .andExpect(status().isOk());
-        verify(carService).addCar(any(Car.class));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("cost").value(1000))
+                .andExpect(jsonPath("model").value("GranTorino"))
+                .andExpect(jsonPath("issueDate").value(LocalDate.of(1970, 01, 01).toString()));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class CarControllerTests {
     }
 
     @Test
-    public void shouldDeleteCar() throws Exception{
+    public void shouldDeleteCar() throws Exception {
         Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
         carRepositoryTest.save(car);
         int id = car.getId();
