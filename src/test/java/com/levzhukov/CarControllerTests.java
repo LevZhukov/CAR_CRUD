@@ -36,8 +36,8 @@ public class CarControllerTests {
 
     @Test
     public void shouldReturnCarsList() throws Exception {
-        Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
-        carRepositoryTest.save(car);
+            Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
+            carRepositoryTest.save(car);
 
         mvc.perform(get("/api/car"))
                 .andExpect(status().isOk())
