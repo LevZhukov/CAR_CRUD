@@ -15,9 +15,9 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public int addCar(Car car) {
-        carRepository.save(car);
-        return car.getId();
+    public Car addCar(Car car) {
+        return carRepository.save(car);
+
     }
 
     public Car getCarById(int carId) throws IllegalArgumentException {

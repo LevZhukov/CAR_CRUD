@@ -34,8 +34,7 @@ public class CarController {
 
     @PostMapping
     public Car addCar(@RequestBody Car car) {
-        int id = carService.addCar(car);
-        return carService.getCarById(id);
+        return carService.addCar(car);
     }
 
     @PatchMapping("{carId}")
