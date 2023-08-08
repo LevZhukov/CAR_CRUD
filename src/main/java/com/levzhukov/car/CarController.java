@@ -47,9 +47,6 @@ public class CarController {
         catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "car with id " + carId + " was not found", e);
         }
-        catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "patch request for car with id " + carId + " resulted in error", e);
-        }
     }
 
     @DeleteMapping("{carId}")
