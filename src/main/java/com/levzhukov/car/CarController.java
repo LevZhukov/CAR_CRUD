@@ -55,16 +55,10 @@ public class CarController {
     @DeleteMapping("{carId}")
     public Car deleteCar(@PathVariable("carId") int carId) {
         try {
-            Car removedCar = carService.getCarById(carId);
-            carService.deleteCar(carId);
-            return removedCar;
+            return carService.deleteCar(carId);
         }
         catch (IllegalArgumentException e){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "car with id " + carId + " was not found", e);
         }
-        catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "delete request on car with id " + carId + " resulted in error", e);
-        }
-
     }
 }

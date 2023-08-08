@@ -30,11 +30,11 @@ public class CarService {
         return carRepository.findAll();
     }
 
-    public void deleteCar(int carId) throws Exception {
-        Optional<Car> optionalCar = carRepository.findById(carId);
-        if (optionalCar.isEmpty()) {
-            throw new Exception();
-        } else carRepository.deleteById(carId);
+    public Car deleteCar(int carId) throws IllegalArgumentException {
+
+        Car removedCar = getCarById(carId);
+        carRepository.deleteById(carId);
+        return removedCar;
     }
 
     @Transactional
