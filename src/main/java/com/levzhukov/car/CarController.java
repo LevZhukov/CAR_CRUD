@@ -5,7 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -33,8 +35,14 @@ public class CarController {
     }
 
     @PostMapping
-    public Car addCar(@RequestBody Car car) {
-        return carService.addCar(car);
+    public ResponseEntity<Void> addCar(@RequestBody Car car, UriComponentsBuilder ucb) {
+
+        Car savedCar = carService.addCar(car);
+        URI locationOfNewCashCard = ucb
+                .path("/{id}")
+                .buildAndExpand(savedCar.getId())
+                .toUri();
+        return ResponseEntity.created(locationOfNewCashCard).build();
     }
 
     @PatchMapping("{carId}")
