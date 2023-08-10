@@ -39,7 +39,7 @@ public class CarController {
 
         Car savedCar = carService.addCar(car);
         URI locationOfNewCashCard = ucb
-                .path("/{id}")
+                .path("api/car/{id}")
                 .buildAndExpand(savedCar.getId())
                 .toUri();
         return ResponseEntity.created(locationOfNewCashCard).build();

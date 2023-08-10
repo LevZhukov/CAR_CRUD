@@ -1,8 +1,6 @@
 package com.levzhukov;
 
 import com.levzhukov.car.Car;
-import com.levzhukov.car.CarController;
-import com.levzhukov.car.CarService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,19 +9,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Sql(value = {"../../reset-database-data.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public class CarControllerTests {
+public class CarControllerTest {
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -36,8 +34,8 @@ public class CarControllerTests {
 
     @Test
     public void shouldReturnCarsList() throws Exception {
-            Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
-            carRepositoryTest.save(car);
+        Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
+        carRepositoryTest.save(car);
 
         mvc.perform(get("/api/car"))
                 .andExpect(status().isOk())
@@ -49,13 +47,21 @@ public class CarControllerTests {
 
     @Test
     public void shouldCreateCar() throws Exception {
-        mvc.perform(post("/api/car")
+        MvcResult result = mvc.perform(post("/api/car")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"cost\":1000, \"model\":\"GranTorino\", \"issueDate\":\"1970-01-01\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(header().exists("Location"))
+                .andReturn();
+
+        String path = result.getResponse().getHeader("Location");
+
+        mvc.perform(get(path))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("cost").value(1000))
                 .andExpect(jsonPath("model").value("GranTorino"))
                 .andExpect(jsonPath("issueDate").value(LocalDate.of(1970, 01, 01).toString()));
+
     }
 
     @Test
