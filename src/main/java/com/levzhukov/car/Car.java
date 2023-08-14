@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
     private int cost;
     private LocalDate issueDate;
 
@@ -55,7 +55,7 @@ public class Car {
         this.cost = cost;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 

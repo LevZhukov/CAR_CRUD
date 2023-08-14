@@ -68,7 +68,7 @@ public class CarControllerTest {
     public void shouldReturnCar() throws Exception {
         Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
         carRepositoryTest.save(car);
-        int id = car.getId();
+        Long id = car.getId();
 
         this.mvc.perform(get("/api/car/" + id))
                 .andDo(print())
@@ -82,7 +82,7 @@ public class CarControllerTest {
     public void shouldUpdateCar() throws Exception {
         Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
         carRepositoryTest.save(car);
-        int id = car.getId();
+        Long id = car.getId();
 
         mvc.perform(patch("/api/car/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +98,7 @@ public class CarControllerTest {
     public void shouldDeleteCar() throws Exception {
         Car car = new Car(1000, "GranTorino", LocalDate.of(1970, 01, 01));
         carRepositoryTest.save(car);
-        int id = car.getId();
+        Long id = car.getId();
 
         mvc.perform(delete("/api/car/" + id))
                 .andExpect(status().isOk())
