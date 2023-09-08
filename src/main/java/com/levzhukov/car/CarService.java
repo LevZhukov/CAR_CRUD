@@ -1,7 +1,13 @@
 package com.levzhukov.car;
 
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,38 +21,56 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public int addCar(Car car) {
-        carRepository.save(car);
-        return car.getId();
+    public Car addCar(Car car) {
+        return carRepository.save(car);
+
     }
 
-    public Car getCarById(int carId) throws IllegalArgumentException {
-        Optional<Car> carOptional = carRepository.findById(carId);
-        if (carOptional.isPresent()) {
-            return carOptional.get();
-        } else throw new IllegalArgumentException();
+    public Car getCarById(Long carId) throws IllegalArgumentException {
+
+       return carRepository.findById(carId).orElseThrow(IllegalArgumentException::new);
+
     }
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll();
+    public List<Car> getAllCars(Pageable pageable) {
+        Page<Car> page = carRepository.findAll(
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "cost"))
+                )
+        );
+
+        return page.getContent();
     }
 
-    public void deleteCar(int carId) throws Exception {
-        Optional<Car> optionalCar = carRepository.findById(carId);
-        if (optionalCar.isEmpty()) {
-            throw new Exception();
-        } else carRepository.deleteById(carId);
+    @GetMapping
+    public ResponseEntity<List<Car>> findAll(Pageable pageable) {
+        Page<Car> page = carRepository.findAll(
+                PageRequest.of(
+                        pageable.getPageNumber(),
+                        pageable.getPageSize(),
+                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "amount"))
+                ));
+        return ResponseEntity.ok(page.getContent());
+    }
+
+
+
+    public Car deleteCar(Long carId) throws IllegalArgumentException {
+
+        Car removedCar = getCarById(carId);
+        carRepository.deleteById(carId);
+        return removedCar;
     }
 
     @Transactional
-    public void updateCar(int carId, Car car) throws Exception {
-        Optional<Car> optionalCar = carRepository.findById(carId);
-        if (optionalCar.isPresent()) {
-            Car carFromDB = optionalCar.get();
-            if(car.getModel() != null) carFromDB.setModel(car.getModel());
-            if(car.getIssueDate() != null) carFromDB.setIssueDate(car.getIssueDate());
-            if(car.getCost() != 0) carFromDB.setCost(car.getCost());
-        } else throw new Exception();
+    public void updateCar(Long carId, Car car) throws IllegalArgumentException {
+
+            Car currentCar = getCarById(carId);
+            if(car.getModel() != null) currentCar.setModel(car.getModel());
+            if(car.getIssueDate() != null) currentCar.setIssueDate(car.getIssueDate());
+            if(car.getCost() != 0) currentCar.setCost(car.getCost());
     }
 }
 
