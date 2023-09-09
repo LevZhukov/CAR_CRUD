@@ -1,14 +1,17 @@
 # CAR REST API EXAMPLE
-This is training project, that demonstrates implementation of REST API, connection to Postgres and H2 DB's, Junit test implementation, Flyway migration
+This is training project, that demonstrates implementation of REST API and surrounding tech.
 
 ## Features
-* CRUD requests per REST
-* 
+* CRUD endpoints per REST
+* DB migration control with FLYWAY
+* H2 DB for tests
+* POSTGRES DB for production
+* JUNIT testing
 
 ## Tech
 - REST API
 - SPRING BOOT
+- H2
 - POSTGRES DB
-- H2 (test)
 - FLYWAY
 - MAVEN
